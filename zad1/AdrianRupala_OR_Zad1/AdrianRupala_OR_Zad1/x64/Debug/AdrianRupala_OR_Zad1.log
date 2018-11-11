@@ -1,0 +1,5 @@
+﻿  Source.cpp
+c:\users\adria\source\repos\adrianrupala_or_zad1\adrianrupala_or_zad1\source.cpp(70): warning C4101: 'status': unreferenced local variable
+c:\users\adria\source\repos\adrianrupala_or_zad1\adrianrupala_or_zad1\source.cpp(68): warning C4101: 'best_of_all': unreferenced local variable
+c:\users\adria\source\repos\adrianrupala_or_zad1\adrianrupala_or_zad1\source.cpp(65): warning C4101: 'tag': unreferenced local variable
+  AdrianRupala_OR_Zad1.vcxproj -> C:\Users\adria\source\repos\AdrianRupala_OR_Zad1\x64\Debug\AdrianRupala_OR_Zad1.exe
