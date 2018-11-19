@@ -2,6 +2,9 @@
 #include <mpi.h>
 #include <chrono>
 
+int moj_nr, p, c; // Moj_nr -> numer procesu, p -> liczba procesów, c -> liczba od urzytkownika
+int counter = 0; // Counter -> liczba wyst¹pieñ danej liczby
+
 using namespace std;
 
 // Funkcja z zadania
@@ -21,16 +24,19 @@ int f(int i) {
 
 void sprawdzenie(int c) {
 
-	int counter = 0;
+	//int counter = 0;
 
 	// Chyba poprawne sprawdzenie zgodnie z za³o¿eniem f(j) == c dla liczby 2000000000
-
-	for (int j = 0; j < 2000000000; j++) {
+	for (int j = 1; j < 2000000000; j++) {
+		//cout << j << endl;
 		//cout << f(j) << endl; //Sprawdzanie czy to dzia³a
 
-		if (f(j) == c) {
-			cout << "Znalazlem! " << f(j) << endl;
-			counter++;
+		// if j % moj_numer+1 = 0 {...}  <- pozielenie na thready
+		if (j % (moj_nr+1) == 0) {
+			if (f(j) == c) {
+				cout << "Znalazlem! " << f(j) << endl;
+				counter++;
+			}
 		}
 	}
 
@@ -60,8 +66,8 @@ int main(int argc, char* argv[]) {
 	
 	MPI_Init(&argc, &argv); // Start obliczeñ MPI
 
-	int moj_nr, p, c; // Moj_nr -> numer procesu, p -> liczba procesów, c -> liczba od urzytkownika
-	int counter = 0; // Counter -> liczba wyst¹pieñ danej liczby
+	//int moj_nr, p, c; // Moj_nr -> numer procesu, p -> liczba procesów, c -> liczba od urzytkownika
+	//int counter = 0; // Counter -> liczba wyst¹pieñ danej liczby
 
 	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr); // Odczytaj numer procesu
 	MPI_Comm_size(MPI_COMM_WORLD, &p); // Odczytaj liczbê procesoów

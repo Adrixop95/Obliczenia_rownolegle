@@ -6,7 +6,7 @@ comm = MPI.COMM_WORLD
 #import pdb;pdb.set_trace()
 size = comm.Get_size()
 rank = comm.Get_rank()
-n= 2 * (10**8)
+n= 2 * (10**7)
 c = f(200)
 
 ret = 0
