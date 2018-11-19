@@ -4,9 +4,6 @@
 
 using namespace std;
 
-// Jakikolwiek tutorial lepszy ni¿ te slajdy: https://iop.vast.ac.vn/~nvthanh/cours/parcomp/Running%20C%20Program%20in%20parallel%20using%20MPI.pdf
-// https://computing.llnl.gov/tutorials/mpi/
-
 // Funkcja z zadania
 int f(int i) {
 	int i4_huge = 2147483647;
@@ -27,9 +24,9 @@ void sprawdzenie(int c) {
 	int counter = 0;
 
 	// Chyba poprawne sprawdzenie zgodnie z za³o¿eniem f(j) == c dla liczby 2000000000
-	// Nie mam pojêcia :C
+
 	for (int j = 0; j < 2000000000; j++) {
-		//cout << f(j) << endl; //Sprawdzanie czy to wgl dzia³a xd
+		//cout << f(j) << endl; //Sprawdzanie czy to dzia³a
 
 		if (f(j) == c) {
 			cout << "Znalazlem! " << f(j) << endl;
@@ -65,8 +62,6 @@ int main(int argc, char* argv[]) {
 
 	int moj_nr, p, c; // Moj_nr -> numer procesu, p -> liczba procesów, c -> liczba od urzytkownika
 	int counter = 0; // Counter -> liczba wyst¹pieñ danej liczby
-
-	MPI_Status status;  // nie wiem po co to jest ale by³o w examplach
 
 	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr); // Odczytaj numer procesu
 	MPI_Comm_size(MPI_COMM_WORLD, &p); // Odczytaj liczbê procesoów
