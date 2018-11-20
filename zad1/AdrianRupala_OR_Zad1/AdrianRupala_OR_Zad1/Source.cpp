@@ -3,8 +3,8 @@
 #include <chrono>
 
 // Globalne zmienne potrzebne do inicjowania reszty
-int moj_nr, p, c; // Moj_nr -> numer procesu, p -> liczba procesów, c -> liczba od urzytkownika
-int counter = 0; // Counter -> liczba wyst¹pieñ danej liczby
+int moj_nr, p, c; // Moj_nr -> numer procesu, p -> liczba procesï¿½w, c -> liczba od uÅ¼ytkownika
+int counter = 0; // Counter -> liczba wystï¿½pieï¿½ danej liczby
 
 using namespace std;
 
@@ -25,7 +25,7 @@ int f(int i) {
 
 void sprawdzenie(int c) {
 	
-	// Sprawdzenie zgodnie z za³o¿eniem f(j) == c dla liczby 2000000000
+	// Sprawdzenie zgodnie z zaï¿½oï¿½eniem f(j) == c dla liczby 2000000000
 	for (int j = 1; j < 2000000000; j++) { 
 		if (j % (moj_nr+1) == 0) { // if j % (moj_numer+1) = 0 {...}  <- pozielenie na thready
 			if (f(j) == c) {
@@ -60,12 +60,12 @@ int main(int argc, char* argv[]) {
 		
 	*/
 	
-	MPI_Init(&argc, &argv); // Start obliczeñ MPI
+	MPI_Init(&argc, &argv); // Start obliczeï¿½ MPI
 
 	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr); // Odczytaj numer procesu
-	MPI_Comm_size(MPI_COMM_WORLD, &p); // Odczytaj liczbê procesoów
+	MPI_Comm_size(MPI_COMM_WORLD, &p); // Odczytaj liczbï¿½ procesoï¿½w
 
-	// Pobranie od u¿ytkownika liczby c, rozg³aszanie
+	// Pobranie od uï¿½ytkownika liczby c, rozgï¿½aszanie
 	if (moj_nr == 0) {
 		cout << "Podaj liczbe c: " << endl;
 		scanf_s("%d", &c);
@@ -77,7 +77,7 @@ int main(int argc, char* argv[]) {
 		sprawdzenie(c); // funkcja z zadania 
 		auto finish = chrono::high_resolution_clock::now(); //Liczenie czasu stop
 		
-		chrono::duration<double> elapsed = finish - start; //czas ca³kowity + print
+		chrono::duration<double> elapsed = finish - start; //czas caï¿½kowity + print
 		cout << "Czas: " << elapsed.count() << "s\n";
 		
 		/*
@@ -90,7 +90,7 @@ int main(int argc, char* argv[]) {
 						 Czas : 63.5318s
 						 Czas : 43.3234s
 		
-			6 procesów -> Czas: 123.535s
+			6 procesï¿½w -> Czas: 123.535s
 						  Czas: 64.2632s
 						  Czas: 28.4757s
 						  Czas: 24.247s
@@ -100,6 +100,6 @@ int main(int argc, char* argv[]) {
 	}
 
 
-	MPI_Finalize();	// Koniec obliczeñ MPI
+	MPI_Finalize();	// Koniec obliczeï¿½ MPI
 	return 0;
 }

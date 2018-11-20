@@ -3,9 +3,12 @@
 
 // Definicja tablicy 2D zgodnie z zadaniem 8000x8000
 // Rozmiar Tablicy
-const int width = 10;
-const int height = 10;
+const int width = 100; // Print 8k/8k to za du¿o dla terminala nawet w ostatniej formie co zwiêksza czas oczekiwania na wynik
+const int height = 100;
 int **arr;
+
+// Definicja zmiennych potrzebnych do MPI
+int moj_nr, p, c; // Moj_nr->numer procesu, p->liczba procesów, c->liczba od u¿ytkownika
 
 using namespace std;
 
@@ -87,12 +90,29 @@ void fill_array(int **arr) {
 	}
 }
 
-int main() {
+void mpi_calculations() {
+	for (int j = 1; j < c; j++) {
+		if (j % (moj_nr + 1) == 0) { // if j % (moj_numer+1) = 0 {...}  <- pozielenie na thready
+
+			cout << "Print 1" << endl;
+			print_array();
+			cout << "Work" << endl;
+			arr = step();
+
+			cout << "Print 2" << endl;
+			print_array();
+		}
+	}
+}
+
+int main(int argc, char* argv[]) {
 	// Konfiguracja tablicy startowej
 	arr = new int*[height];
 	for ( int i = 0; i < height; i++ ) arr[i] = new int[width];
 	fill_array(arr);
 
+
+	/*
 	cout << "Print 1" << endl;
 	print_array();
 	cout << "Work" << endl;
@@ -100,6 +120,27 @@ int main() {
 
 	cout << "Print 2" << endl;
 	print_array();
+	*/
+	
+
+	MPI_Init(&argc, &argv); // Start obliczeñ MPI
+
+	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr); // Odczytaj numer procesu
+	MPI_Comm_size(MPI_COMM_WORLD, &p); // Odczytaj liczbê procesów
+
+	// Pobranie od u¿ytkownika danych
+	if (moj_nr == 0) {
+		cout << "Podaj liczbe c: " << endl;
+		scanf_s("%d", &c);
+	}
+	MPI_Bcast(&c, 1, MPI_INT, 0, MPI_COMM_WORLD);
+
+	if (moj_nr < p) {
+		mpi_calculations();
+	}
+	
+
+	MPI_Finalize(); // Koniec obliczeñ
 
 	cin.get();
 	return 0;
