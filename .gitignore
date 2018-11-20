@@ -428,4 +428,8 @@ ASALocalRun/
 # Local History for Visual Studio
 .localhistory/
 
+# venv
+
+venv
+
 # End of https://www.gitignore.io/api/pycharm,visualstudio,visualstudiocode
