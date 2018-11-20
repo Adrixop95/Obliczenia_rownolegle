@@ -2,6 +2,7 @@
 #include <mpi.h>
 #include <chrono>
 
+// Globalne zmienne potrzebne do inicjowania reszty
 int moj_nr, p, c; // Moj_nr -> numer procesu, p -> liczba procesów, c -> liczba od urzytkownika
 int counter = 0; // Counter -> liczba wyst¹pieñ danej liczby
 
@@ -23,16 +24,10 @@ int f(int i) {
 }
 
 void sprawdzenie(int c) {
-
-	//int counter = 0;
-
-	// Chyba poprawne sprawdzenie zgodnie z za³o¿eniem f(j) == c dla liczby 2000000000
-	for (int j = 1; j < 2000000000; j++) {
-		//cout << j << endl;
-		//cout << f(j) << endl; //Sprawdzanie czy to dzia³a
-
-		// if j % moj_numer+1 = 0 {...}  <- pozielenie na thready
-		if (j % (moj_nr+1) == 0) {
+	
+	// Sprawdzenie zgodnie z za³o¿eniem f(j) == c dla liczby 2000000000
+	for (int j = 1; j < 2000000000; j++) { 
+		if (j % (moj_nr+1) == 0) { // if j % (moj_numer+1) = 0 {...}  <- pozielenie na thready
 			if (f(j) == c) {
 				cout << "Znalazlem! " << f(j) << endl;
 				counter++;
@@ -59,21 +54,18 @@ int main(int argc, char* argv[]) {
 	auto finish = chrono::high_resolution_clock::now();
 	chrono::duration<double> elapsed = finish - start;
 	cout << "Czas: " << elapsed.count() << "s\n";
+		
 	// Wynik dla i7-8700/16gb ram, liczba c = 1229094172
 	// Czas: 121.717s, 
-
+		
 	*/
 	
 	MPI_Init(&argc, &argv); // Start obliczeñ MPI
 
-	//int moj_nr, p, c; // Moj_nr -> numer procesu, p -> liczba procesów, c -> liczba od urzytkownika
-	//int counter = 0; // Counter -> liczba wyst¹pieñ danej liczby
-
 	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr); // Odczytaj numer procesu
 	MPI_Comm_size(MPI_COMM_WORLD, &p); // Odczytaj liczbê procesoów
 
-
-	// Pobranie od u¿ytkownika liczby c, rozg³aszanie (prezewntacja 1)
+	// Pobranie od u¿ytkownika liczby c, rozg³aszanie
 	if (moj_nr == 0) {
 		cout << "Podaj liczbe c: " << endl;
 		scanf_s("%d", &c);
@@ -87,10 +79,24 @@ int main(int argc, char* argv[]) {
 		
 		chrono::duration<double> elapsed = finish - start; //czas ca³kowity + print
 		cout << "Czas: " << elapsed.count() << "s\n";
-		// Wynik dla i7-8700/16gb ram, liczba c = 1229094172
-		// 2 procesy -> Czas: 120.577s
-		// 4 procesy -> takie same wyniki, bez sensu
-		// 6 procesów -> takie same wyniki, bez sensu		
+		
+		/*
+			Wynik dla i7-8700/16gb ram, liczba c = 1229094172
+			2 procesy -> Czas: 123.191s
+						 Czas: 63.3737s
+		
+			4 procesy -> Czas: 123.115s
+						 Czas: 33.5154s
+						 Czas : 63.5318s
+						 Czas : 43.3234s
+		
+			6 procesów -> Czas: 123.535s
+						  Czas: 64.2632s
+						  Czas: 28.4757s
+						  Czas: 24.247s
+						  Czas: 34.3519s
+						  Czas: 44.0315s
+		*/
 	}
 
 
