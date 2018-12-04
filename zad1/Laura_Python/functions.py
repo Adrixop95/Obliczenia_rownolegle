@@ -8,9 +8,8 @@ def f(i):
         k = (value // 127773)
         value = (16807.0 * (value - k * 127773) - k * 2836)
         if value >= i4_huge:
-            #print('przed',value)
-            value -= i4_huge
-           # print('po', value)
+            while value >= i4_huge:
+                value -= i4_huge
 
     return value
 
