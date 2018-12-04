@@ -27,7 +27,7 @@ void sprawdzenie(int c) {
 	
 	// Sprawdzenie zgodnie z za�o�eniem f(j) == c dla liczby 2000000000
 	for (int j = 1; j < 2000000000; j++) { 
-		if (j % (moj_nr+1) == 0) { // if j % (moj_numer+1) = 0 {...}  <- pozielenie na thready
+		if (j % p == moj_nr) { // if j % (moj_numer+1) = 0 {...}  <- pozielenie na thready
 			if (f(j) == c) {
 				cout << "Znalazlem! " << f(j) << endl;
 				counter++;
