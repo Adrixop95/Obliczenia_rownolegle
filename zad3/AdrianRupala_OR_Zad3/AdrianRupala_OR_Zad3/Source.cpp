@@ -8,18 +8,16 @@
 
 using namespace std;
 
-// Kod z PDF
-typedef vector<int> vertices; // sorted
-typedef int vertex;
+typedef	vector<int>	vertices;	// sorted
+typedef	int			vertex;
+vector<vertices>	N;			// neighbors
 
-vector<vertices> N; // neighbors
 
 void BronKerbosh(vertices R, vertices P, vertices X) {
 	if (P.empty() and X.empty()) {
 		for (vertex r : R) cout << r << " "; // report R as a maximal clique
 		cout << endl;
-	}
-	else {
+	} else {
 		vertices U, V;
 		set_union(P.begin(), P.end(), X.begin(), X.end(), back_inserter(U));
 		vertex u = U[rand() % U.size()];
@@ -35,13 +33,11 @@ void BronKerbosh(vertices R, vertices P, vertices X) {
 			X.insert(it, v);
 		}
 	}
-} // Koniec kodu z PDF
+}
 
 
 
 int main() {
-
-	// Kod z PDF (..) BronKerbosh(...)
 	srand(time(0));
 	N.reserve(5);
 	N[0] = { 1 };
@@ -50,7 +46,6 @@ int main() {
 	N[3] = { 1, 2, 4 };
 	N[4] = { 1, 3 };
 	BronKerbosh({}, { 0, 1, 2, 3, 4 }, {});
-
 
 	cin.get();
 	return 0;
