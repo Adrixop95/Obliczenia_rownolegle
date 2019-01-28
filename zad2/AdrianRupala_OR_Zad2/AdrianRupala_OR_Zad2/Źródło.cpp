@@ -92,7 +92,7 @@ void fill_array(int **arr) {
 
 void mpi_calculations() {
 	for (int j = 1; j < c; j++) {
-		if (j % (moj_nr + 1) == 0) { // if j % (moj_numer+1) = 0 {...}  <- pozielenie na thready
+		if (j % p == moj_nr) { // if j % (moj_numer+1) = 0 {...}  <- pozielenie na thready
 
 			cout << "Print 1" << endl;
 			print_array();
