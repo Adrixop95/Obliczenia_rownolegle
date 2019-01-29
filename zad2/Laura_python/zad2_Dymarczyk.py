@@ -1,4 +1,5 @@
 from mpi4py import MPI
+import copy
 
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
@@ -16,6 +17,18 @@ def tworz_plansze(n):
                 wiersz.append(0)
         ret.append(wiersz)
     return ret
+
+#lista1 = [1, 2, 3, 4, 5]
+#lista2 = lista1[:]
+
+
+def krok(plansza, n):
+    kopia = copy.deepcopy(plansza)
+    for i in range(n):
+        for j in range(n):
+            komorka = plansza[i][j]
+            if komorka:
+                pass #TODO funkcja zliczająca sąsiadów
 
 
 plansza = tworz_plansze(10)
