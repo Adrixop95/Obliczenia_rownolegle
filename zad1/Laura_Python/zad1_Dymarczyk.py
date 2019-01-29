@@ -4,7 +4,7 @@ from functions import f
 comm = MPI.COMM_WORLD
 size = comm.Get_size()
 rank = comm.Get_rank()
-n = 2 * (10 ** 8)
+n = 2 * (10 ** 9)
 c = f(200)
 
 ret = 0
