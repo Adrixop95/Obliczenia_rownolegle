@@ -6,10 +6,15 @@
 
 using namespace std;
 
+string	slowa_kluczowe_python[] =	{
+	"and",		"as",		"assert",	"break",	"class",	"continue",	"def",		"del",
+	"elif",		"else",		"except",	"exec",		"finally",	"for",		"from",		"global",
+	"if",		"import",	"in",		"is",		"lambda",	"not",		"or",		"pass",
+	"print",	"raise",	"return",	"try",		"while",	"with",		"yeld" };
+int	table_size = 31;
 int moj_nr, p, c;
 
-// Funkcja z PDF
-unsigned int hash(const char* s, unsigned int c) {
+unsigned int hash( const char* s, unsigned int c ) {
 	unsigned int x = 0;
 
 	for (unsigned int i = 0; s[i] != 0; ++i) {
@@ -20,12 +25,15 @@ unsigned int hash(const char* s, unsigned int c) {
 	return (c / x) % 41;
 }
 
-int main(int argc, char* argv[]) {
+unsigned int *hashuj_tablice( unsigned int c ) {
+	unsigned int	*nowa_tablica	=	new unsigned int[table_size]();
+	for (int k = 0; k < table_size; k++) {
+		nowa_tablica[k] = ::hash(slowa_kluczowe_python[k].c_str(), c);
+	}
+	return nowa_tablica;
+}
 
-	string slowa_kluczowe_python[] = {"and", "as", "assert", "break", "class", "continue", 
-		"def", "del", "elif", "else", "except", "exec", "finally", "for", "from", "global", 
-		"if", "import", "in", "is", "lambda", "not", "or", "pass", "print", "raise", 
-		"return", "try", "while", "with", "yeld"};
+int main(int argc, char* argv[]) {
 
 	int x;
 	/*
@@ -54,9 +62,9 @@ int main(int argc, char* argv[]) {
 	if (moj_nr < p) {
 		auto start = chrono::high_resolution_clock::now(); //Liczenie czasu start
 
-		for (int i = 0; i < INT_MAX; i++) {
-			for (int j = 0; j < size(slowa_kluczowe_python); j++) {
-				::hash(slowa_kluczowe_python[j].c_str(), INT_MAX);
+		for (int i = 0; i < 1000; i++) {
+			for (int j = 0; j < table_size; j++) {
+				hashuj_tablice( 1000 );
 			}
 		}
 		auto finish = chrono::high_resolution_clock::now(); //Liczenie czasu stop

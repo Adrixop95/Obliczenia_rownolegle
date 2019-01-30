@@ -38,14 +38,21 @@ void BronKerbosh(vertices R, vertices P, vertices X) {
 
 
 int main() {
-	srand(time(0));
-	N.reserve(5);
-	N[0] = { 1 };
-	N[1] = { 0, 2, 3, 4 };
-	N[2] = { 1, 3 };
-	N[3] = { 1, 2, 4 };
-	N[4] = { 1, 3 };
-	BronKerbosh({}, { 0, 1, 2, 3, 4 }, {});
+
+	vector<int> dane;
+	printf( "%d", dane.capacity() );
+	dane.reserve(5);
+	printf( "%d", dane.capacity() );
+	dane[0] = { 1 };
+
+	//srand(time(0));
+	//N.reserve(5);
+	//N[0] = { 1 };
+	//N[1] = { 0, 2, 3, 4 };
+	//N[2] = { 1, 3 };
+	//N[3] = { 1, 2, 4 };
+	//N[4] = { 1, 3 };
+	//BronKerbosh({}, { 0, 1, 2, 3, 4 }, {});
 
 	cin.get();
 	return 0;
