@@ -1,10 +1,13 @@
-#include <cstdlib>
+﻿#include <cstdlib>
 #include <iostream>
 #include <ctime>
 #include <algorithm>
 #include <vector>
 #include <iterator>
 #include <mpi.h>
+#include <fstream>
+#include <string>
+#include <chrono>
 
 using namespace std;
 
@@ -12,6 +15,7 @@ typedef	vector<int>	vertices;	// sorted
 typedef	int			vertex;
 vector<vertices>	N;			// neighbors
 
+int moj_nr, p, c;
 
 void BronKerbosh(vertices R, vertices P, vertices X) {
 	if (P.empty() and X.empty()) {
@@ -35,25 +39,86 @@ void BronKerbosh(vertices R, vertices P, vertices X) {
 	}
 }
 
+void vprint( vector<vertices> x ) {
+	for (int i = 0; i < x.size(); i++) {
+		for (int j = 0; j < x[i].size(); j++) {
+			printf("%d, ", x[i][j]);
+		}
+		cout << endl;
+	}
+	cout << endl;
+}
 
+string loadfile( string path ) {
+	ifstream myfile( path );
+	string output = "";
+	string line = "";
 
-int main() {
+	if (myfile.is_open()) {
+		cout << "Jest plik" << endl;
+		while ( getline(myfile, line) ) {
+			output += (line + "\n");
+		}
+		myfile.close();
+	}
+	return output;
+}
 
-	vector<int> dane;
-	printf( "%d", dane.capacity() );
-	dane.reserve(5);
-	printf( "%d", dane.capacity() );
-	dane[0] = { 1 };
+vector< vertices > parse(string text) {
+	vector< vertices > output;
+	string num = "";
+	vector<int> next;
+	for (int c = 0; c < text.size(); c++) {
+		if (text[c] == ' ') {
+			next.push_back(atoi(num.c_str()));
+			num = "";
+		} else if (text[c] == '\n') {
+			next.push_back(atoi(num.c_str()));
+			num = "";
 
-	//srand(time(0));
+			output.push_back(next);
+			next.clear();
+		} else {
+			num += text[c];
+		}
+	}
+	return output;
+}
+
+int main( int argc, char *argv[] ) {
+	/*
+	if (argc > 1) {
+		string plik = loadfile( argv[1] );
+	}
+	*/
+
+	string tekst = loadfile("test.txt");
+	N = parse(tekst);
+
+	srand(time(0));
 	//N.reserve(5);
-	//N[0] = { 1 };
-	//N[1] = { 0, 2, 3, 4 };
-	//N[2] = { 1, 3 };
-	//N[3] = { 1, 2, 4 };
-	//N[4] = { 1, 3 };
-	//BronKerbosh({}, { 0, 1, 2, 3, 4 }, {});
+	//N.push_back({ 0 });
+	//N.push_back({ 0, 2, 3, 4 });
+	//N.push_back({ 1, 3 });
+	//N.push_back({ 1, 2, 4 });
+	//N.push_back({ 1, 3 });
+	vprint(N);
+	
+	MPI_Init(&argc, &argv); // Start oblicze� MPI
 
-	cin.get();
+	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr); // Odczytaj numer procesu
+	MPI_Comm_size(MPI_COMM_WORLD, &p); // Odczytaj liczb� proceso�w
+
+	if (moj_nr < p) {
+		auto start = chrono::high_resolution_clock::now(); //Liczenie czasu start
+
+		BronKerbosh({}, { 0, 1, 2, 3, 4 }, {});
+		auto finish = chrono::high_resolution_clock::now(); //Liczenie czasu stop
+
+		chrono::duration<double> elapsed = finish - start; //czas ca�kowity + print
+		cout << "Czas: " << elapsed.count() << "s\n";
+	}
+
+		MPI_Finalize();
 	return 0;
 }
