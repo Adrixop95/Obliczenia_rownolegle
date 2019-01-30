@@ -35,15 +35,23 @@ comm = MPI.COMM_WORLD
 size = comm.Get_size()
 rank = comm.Get_rank()
 
+ret = []
+time = MPI.Wtime()
 
-def zadanie_4(komendy):
+def zadanie_4(komendy, ret):
     i4_huge = 2 * (10 ** 9)
     for i in range(rank * i4_huge // size, (rank + 1) * i4_huge // size):
         zahaszowana = hashuj_tablice(komendy, i)
         if sprawdz_unikalnosc(zahaszowana):
-            print(i)
+            # print(i)
+            ret += i
             return i
     return 0
 
 
-zadanie_4(commands)
+zadanie_4(commands, ret)
+
+time = MPI.Wtime() - time
+
+print('rank', rank, 'has data:', ret)
+print('time', time, 'seconds')
