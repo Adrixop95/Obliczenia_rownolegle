@@ -44,7 +44,7 @@ def zadanie_4(komendy, ret):
         zahaszowana = hashuj_tablice(komendy, i)
         if sprawdz_unikalnosc(zahaszowana):
             # print(i)
-            ret += i
+            ret += [i]
             return i
     return 0
 
