@@ -19,7 +19,7 @@ for i in range(rank * n // size + 1, (rank + 1) * n // size + 1):
         x, y = accurancy * i, accurancy * j
         if (0.2 - y) / (1.3 - x) - sin(x) / x < -1.1008:
             # print(x, y)
-            ret.append(x, y)
+            ret.append((x, y))
 
 time = MPI.Wtime() - time
 
