@@ -1,16 +1,19 @@
-#include <iostream>
+ï»¿#include <iostream>
 #include <math.h>
 #include <mpi.h>
 #include <chrono>
+#include <vector>
 
 using namespace std;
 
-int moj_nr, p; // globalne zmiennie dt. MPI
+// globalne zmiennie dt. MPI
+int moj_nr, p;
 
-// z³o¿onoœæ tej funkcji jest kwadratowa, to obliczanie bêdzie trwa³o wiecznoœæ na moim sprzêcie, nie podejmujê siê tego, INT_MAX (32bit) to 2147483647, mo¿na u¿yæ _I64_MAX (64 bit) co daje jeszcze wiêkszy zakres 9223372036854775807
+// zÅ‚oÅ¼onoÅ›Ä‡ tej funkcji jest kwadratowa, to obliczanie bÄ™dzie trwaÅ‚o wiecznoÅ›Ä‡ na moim sprzÄ™cie, nie podejmujÄ™ siÄ™ tego, INT_MAX (32bit) to 2147483647, moÅ¼na uÅ¼yÄ‡ _I64_MAX (64 bit) co daje jeszcze wiÄ™kszy zakres 9223372036854775807
+/*
 void calculate() {
 	for (int x = 1; x <= INT_MAX; x++) { // liczby rzeczywiste x dodatnie od 0 do MAX_INT32 w c++ 2147483647
-		if (x % p == moj_nr) { // podzia³ na w¹tki MPI
+		if (x % p == moj_nr) { // podziaÅ‚ na wÄ…tki MPI
 			//for (int y = 0; y <= INT_MAX; y++) { // liczby rzeczywiste y dodatnie od 0 do MAX_INT32 w c++ 2147483647
 			for (int y = 1; y < x + 2; y++){
 				if (y - x < 2 && 2 * x + 3 * y < 1 && (0.2 - y) / (1.3 - x) - sin(x) / x < -1.1008) { // warunek z zadania
@@ -20,13 +23,15 @@ void calculate() {
 		}
 	}
 }
+*/
 
+/*
 int main(int argc, char* argv[]) {
 
-	MPI_Init(&argc, &argv); // start obliczeñ mpi
+	MPI_Init(&argc, &argv); // start obliczeÅ„ mpi
 
 	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr); // definiowanie numeru procesu 
-	MPI_Comm_size(MPI_COMM_WORLD, &p); // definiowanie liczby procesów
+	MPI_Comm_size(MPI_COMM_WORLD, &p); // definiowanie liczby procesÃ³w
 
 	if (moj_nr < p) { // warunek zawsze sprawdzony, nie jest wymagany
 		auto start = chrono::high_resolution_clock::now(); // czas start
@@ -37,6 +42,51 @@ int main(int argc, char* argv[]) {
 		cout << "Czas:" << elapsed.count() << "s\n"; // wypisanie czasu
 	}
 	
-	MPI_Finalize(); // zakoñczenie obliczeñ mpi
+	MPI_Finalize(); // zakoÅ„czenie obliczeÅ„ mpi
+	return 0;
+}
+*/
+
+void vprint(vector<float*> x) {
+	for (int i = 1; i < x.size(); i++) {
+		if (i % p == moj_nr) {
+			cout << x[i][0] << ", " << x[i][1] << endl;
+		}
+	}
+	cout << endl;
+}
+
+int main(int argc, char* argv[]) {
+	
+	MPI_Init(&argc, &argv);
+
+	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr);
+	MPI_Comm_size(MPI_COMM_WORLD, &p);
+
+	vector< float* >	ret;
+	int		n			=	100;
+	float	accurancy	=	0.0000001;
+
+	ret.push_back(new float[2]{ 0, 0 });
+
+	auto start = chrono::high_resolution_clock::now();
+	for ( int i = int(moj_nr * n / p + 1); i < int((moj_nr + 1) * n / p + 1); i++ ) {
+		for ( int j = int(moj_nr * n / p + 1); j < int((moj_nr + 1) * n / p + 1); j++ ) {
+			float x = accurancy * i;
+			float y = accurancy * j;
+
+			if ((0.2 - y) / (1.3 - x) - sin(x) / x < -1.1008) {
+				ret.push_back( new float[2]{ x, y } );
+			}
+		}
+	}
+
+	vprint(ret);
+
+	auto finish = chrono::high_resolution_clock::now();
+	chrono::duration<double> elapsed = finish - start; //czas caï¿½kowity + print
+	cout << "Czas: " << elapsed.count() << "s\n";
+
+	MPI_Finalize();
 	return 0;
 }
