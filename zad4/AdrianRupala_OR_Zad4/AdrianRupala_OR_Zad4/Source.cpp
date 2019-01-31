@@ -1,78 +1,82 @@
 ﻿#include <iostream>
-#include <mpi.h>
 #include <string>
 #include <iterator>
 #include <chrono>
+#include <string>
+#include <mpi.h>
 
 using namespace std;
 
-string	slowa_kluczowe_python[] =	{
-	"and",		"as",		"assert",	"break",	"class",	"continue",	"def",		"del",
-	"elif",		"else",		"except",	"exec",		"finally",	"for",		"from",		"global",
-	"if",		"import",	"in",		"is",		"lambda",	"not",		"or",		"pass",
-	"print",	"raise",	"return",	"try",		"while",	"with",		"yeld" };
-int	table_size = 31;
-int moj_nr, p, c;
+int moj_nr, p;
 
-unsigned int hash( const char* s, unsigned int c ) {
-	unsigned int x = 0;
+string commands[] = {
+	"and", "del", "from", "not", "while",
+	"as", "elif", "global", "or", "with",
+	"assert", "else", "if", "pass", "yield",
+	"break", "except", "import", "print",
+	"class", "exec", "in", "rasie",
+	"continue", "finally", "is", "return",
+	"def", "for", "lambda", "try"
+};
 
-	for (unsigned int i = 0; s[i] != 0; ++i) {
+unsigned int hash(string command, unsigned int c) {
+	int x = 0;
+
+	for (int i = 0; i < size(command); i++) {
 		x <<= 3;
-		x ^= s[i];
+		x ^= command[i];
 	}
-
-	return (c / x) % 41;
+	return int((c / x) % 41);
 }
 
-unsigned int *hashuj_tablice( unsigned int c ) {
-	unsigned int	*nowa_tablica	=	new unsigned int[table_size]();
-	for (int k = 0; k < table_size; k++) {
-		nowa_tablica[k] = ::hash(slowa_kluczowe_python[k].c_str(), c);
+int *hashuj_tablice(string *tablica, int tSize, unsigned int c) {
+	int *ret = new int[tSize];
+	for (int i = 0; i < tSize; i++) {
+		ret[i] = ::hash(tablica[i], c);
 	}
-	return nowa_tablica;
+	return ret;
+}
+
+int count(int *tablica, int tSize, int item) {
+	int c = 0;
+	for (int i = 0; i < tSize; i++) {
+		if (tablica[i] == item) { c += 1; }
+	}
+	return c;
+}
+
+bool sprawdz_unikalnosc(int *tablica, int size) {
+	for (int i = int(moj_nr * INT_MAX / p); i < int((moj_nr + 1) * INT_MAX / p); i++) {
+		if (count(tablica, size, tablica[i]) != 1) { return false; }
+	}
+	return true;
 }
 
 int main(int argc, char* argv[]) {
 
-	int x;
-	/*
-	cout << "Podaj liczbe: " << endl;
-	cin >> x;
+	MPI_Init(&argc, &argv);
 
-	for (int i = 0; i < x; i++) {
-		for (int j = 0; j < size(slowa_kluczowe_python); j++) {
-			::hash(slowa_kluczowe_python[j].c_str(), x);
-		}
-	}
-	*/
+	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr);
+	MPI_Comm_size(MPI_COMM_WORLD, &p);
 
-	MPI_Init(&argc, &argv); // Start oblicze� MPI
-
-	MPI_Comm_rank(MPI_COMM_WORLD, &moj_nr); // Odczytaj numer procesu
-	MPI_Comm_size(MPI_COMM_WORLD, &p); // Odczytaj liczb� proceso�w
-
-	// Pobranie od u�ytkownika liczby c, rozg�aszanie
-	//if (moj_nr == 0) {
-	//	cout << "Podaj liczbe c: " << endl;
-	//	scanf_s("%d", &c);
-	//}
-	//MPI_Bcast(&c, 1, MPI_INT, 0, MPI_COMM_WORLD);
-
+	int	commands_size = size(commands);
 	if (moj_nr < p) {
-		auto start = chrono::high_resolution_clock::now(); //Liczenie czasu start
+		auto start = chrono::high_resolution_clock::now();
 
-		for (int i = 0; i < 1000; i++) {
-			for (int j = 0; j < table_size; j++) {
-				hashuj_tablice( 1000 );
+		for (int i = int(moj_nr * INT_MAX / p); i < int((moj_nr + 1) * INT_MAX / p); i++) {
+			int *hashed = hashuj_tablice(commands, commands_size, i);
+			if (sprawdz_unikalnosc(hashed, commands_size)) {
+				cout << i << endl;
 			}
 		}
-		auto finish = chrono::high_resolution_clock::now(); //Liczenie czasu stop
+		auto finish = chrono::high_resolution_clock::now();
 
-		chrono::duration<double> elapsed = finish - start; //czas ca�kowity + print
+		chrono::duration<double> elapsed = finish - start;
 		cout << "Czas: " << elapsed.count() << "s\n";
 	}
 
-	MPI_Finalize();	// Koniec oblicze� MPI
+	// 1970821528  - wynik, czas 2584.33 seconds dla 16 rdzeni
+
+	MPI_Finalize();
 	return 0;
 }
